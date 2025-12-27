@@ -18,6 +18,7 @@ app.use('/api/equipment', require('./routes/equipment'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/teams', require('./routes/teams'));
 app.use('/api/companies', require('./routes/companies'));
+app.use('/api/requests', require('./routes/requests'));
 
 // Test Route
 app.get('/', (req, res) => {

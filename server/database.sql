@@ -95,5 +95,6 @@ CREATE TABLE IF NOT EXISTS maintenance_requests (
     priority request_priority DEFAULT 'medium',
     status request_status DEFAULT 'new',
     instructions TEXT,
-    notes TEXT
+    notes TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

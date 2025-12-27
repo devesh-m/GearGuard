@@ -5,6 +5,8 @@ import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import Equipment from './pages/Equipment';
 import WorkCenters from './pages/WorkCenters';
+import Requests from './pages/Requests';
+import AddEquipmentCategory from './pages/AddEquipmentCategory';
 import './App.css';
 
 const PrivateRoute = ({ children }) => {
@@ -23,6 +25,7 @@ const Navbar = () => {
         <Link to="/dashboard">Dashboard</Link>
         <Link to="/equipment">Equipment</Link>
         <Link to="/work-centers">Work Centers</Link>
+        <Link to="/requests">Requests</Link>
       </div>
     </nav>
   );
@@ -57,6 +60,22 @@ function App() {
             element={
               <PrivateRoute>
                 <WorkCenters />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/requests" 
+            element={
+              <PrivateRoute>
+                <Requests />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/add-equipment-category" 
+            element={
+              <PrivateRoute>
+                <AddEquipmentCategory />
               </PrivateRoute>
             } 
           />
