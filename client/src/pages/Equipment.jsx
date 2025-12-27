@@ -19,8 +19,11 @@ const Equipment = () => {
         assigned_to_user_id: '',
         department: '',
         health_status: 100,
-        company_id: ''
+        company_id: '',
+        purchase_date: '',
+        warranty_expiry: ''
     });
+    const [selectedEquipment, setSelectedEquipment] = useState(null);
 
     const token = localStorage.getItem('token');
 
@@ -80,7 +83,9 @@ const Equipment = () => {
                 assigned_to_user_id: '',
                 department: '',
                 health_status: 100,
-                company_id: ''
+                company_id: '',
+                purchase_date: '',
+                warranty_expiry: ''
             });
             fetchData();
         } catch (err) {
@@ -168,6 +173,14 @@ const Equipment = () => {
                                 ))}
                             </select>
                         </div>
+                        <div className="form-group">
+                            <label>Purchase Date</label>
+                            <input type="date" name="purchase_date" value={formData.purchase_date} onChange={handleChange} />
+                        </div>
+                        <div className="form-group">
+                            <label>Warranty Expiry</label>
+                            <input type="date" name="warranty_expiry" value={formData.warranty_expiry} onChange={handleChange} />
+                        </div>
                         <button type="submit" className="btn-primary">Save Equipment</button>
                     </form>
                 </div>
@@ -181,15 +194,17 @@ const Equipment = () => {
                         <th>Department</th>
                         <th>Serial Number</th>
                         <th>Technician</th>
-                        <th>Equipment Category</th>
+                        <th>Category</th>
                         <th>Company</th>
+                        <th>Warranty</th>
+                        <th>Maintenance</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {equipment.map(item => (
-                        <tr key={item.id}>
-                            <td>{item.name}</td>
+                        <tr key={item.id} className={item.is_scrapped ? 'scrapped-row' : ''}>
+                            <td>{item.name} {item.is_scrapped && <span className="badge-scrap">SCRAPPED</span>}</td>
                             <td>{item.assigned_user_name}</td>
                             <td>{item.department}</td>
                             <td>{item.serial_number}</td>
@@ -197,12 +212,124 @@ const Equipment = () => {
                             <td>{item.category_name}</td>
                             <td>{item.company_name}</td>
                             <td>
+                                {item.warranty_expiry ? (
+                                    <span className={new Date(item.warranty_expiry) < new Date() ? 'warranty-expired' : 'warranty-valid'}>
+                                        {new Date(item.warranty_expiry).toLocaleDateString()}
+                                    </span>
+                                ) : '-'}
+                            </td>
+                            <td>
+                                <button 
+                                    className="btn-smart" 
+                                    onClick={() => setSelectedEquipment(item)}
+                                    title="View Maintenance Requests"
+                                >
+                                    🔧 Maintenance ({item.open_requests_count || 0})
+                                </button>
+                            </td>
+                            <td>
                                 <button className="btn-danger btn-sm" onClick={() => handleDelete(item.id)}>Delete</button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+
+            {/* Equipment Detail Modal with Maintenance Requests */}
+            {selectedEquipment && (
+                <EquipmentDetailModal 
+                    equipment={selectedEquipment} 
+                    onClose={() => setSelectedEquipment(null)} 
+                    token={token}
+                />
+            )}
+        </div>
+    );
+};
+
+// Equipment Detail Modal Component - Shows maintenance requests for specific equipment
+const EquipmentDetailModal = ({ equipment, onClose, token }) => {
+    const [requests, setRequests] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchRequests();
+    }, [equipment.id]);
+
+    const fetchRequests = async () => {
+        try {
+            const res = await axios.get(`http://localhost:5000/api/requests?resource_id=${equipment.id}`, {
+                headers: { token }
+            });
+            // Filter to only show requests for this equipment
+            const equipmentRequests = res.data.filter(r => r.resource_id === equipment.id);
+            setRequests(equipmentRequests);
+            setLoading(false);
+        } catch (err) {
+            console.error(err);
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="modal-overlay">
+            <div className="modal-content modal-large">
+                <div className="modal-header">
+                    <h2>Equipment: {equipment.name}</h2>
+                    <button className="btn-close" onClick={onClose}>&times;</button>
+                </div>
+                
+                <div className="equipment-details">
+                    <div className="detail-row">
+                        <span><strong>Serial:</strong> {equipment.serial_number || 'N/A'}</span>
+                        <span><strong>Category:</strong> {equipment.category_name || 'N/A'}</span>
+                        <span><strong>Department:</strong> {equipment.department || 'N/A'}</span>
+                    </div>
+                    <div className="detail-row">
+                        <span><strong>Technician:</strong> {equipment.technician_name || 'N/A'}</span>
+                        <span><strong>Location:</strong> {equipment.location || 'N/A'}</span>
+                        <span><strong>Health:</strong> {equipment.health_status}%</span>
+                    </div>
+                    {equipment.is_scrapped && (
+                        <div className="scrap-warning">
+                            ⚠️ This equipment has been marked as SCRAPPED
+                        </div>
+                    )}
+                </div>
+
+                <h3>Maintenance Requests ({requests.length})</h3>
+                
+                {loading ? (
+                    <p>Loading requests...</p>
+                ) : requests.length === 0 ? (
+                    <p>No maintenance requests for this equipment.</p>
+                ) : (
+                    <table className="data-table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Type</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Technician</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {requests.map(req => (
+                                <tr key={req.id}>
+                                    <td>{req.subject}</td>
+                                    <td>{req.type}</td>
+                                    <td className={`priority-${req.priority}`}>{req.priority}</td>
+                                    <td>{req.status}</td>
+                                    <td>{req.technician_name || 'Unassigned'}</td>
+                                    <td>{new Date(req.request_date).toLocaleDateString()}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
+            </div>
         </div>
     );
 };

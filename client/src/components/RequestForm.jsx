@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const RequestForm = ({ onClose, onSubmit }) => {
+const RequestForm = ({ onClose, onSubmit, defaultDate }) => {
     const [formData, setFormData] = useState({
         subject: '',
         maintenance_for: 'equipment',
@@ -9,7 +9,7 @@ const RequestForm = ({ onClose, onSubmit }) => {
         type: 'corrective',
         team_id: '',
         technician_id: '',
-        scheduled_date: '',
+        scheduled_date: defaultDate ? `${defaultDate}T09:00` : '',
         duration: '',
         priority: 'medium',
         instructions: '',
@@ -51,6 +51,30 @@ const RequestForm = ({ onClose, onSubmit }) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+    };
+
+    // Auto-fill logic: When equipment is selected, auto-fill technician from equipment record
+    const handleResourceChange = (e) => {
+        const resourceId = e.target.value;
+        setFormData({ ...formData, resource_id: resourceId });
+        
+        if (formData.maintenance_for === 'equipment' && resourceId) {
+            const selectedEquipment = equipment.find(eq => eq.id === resourceId);
+            if (selectedEquipment) {
+                // Auto-fill technician from equipment
+                if (selectedEquipment.technician_id) {
+                    setFormData(prev => ({ 
+                        ...prev, 
+                        resource_id: resourceId,
+                        technician_id: selectedEquipment.technician_id 
+                    }));
+                }
+                // Auto-set category filter
+                if (selectedEquipment.category_id) {
+                    setSelectedCategory(selectedEquipment.category_id);
+                }
+            }
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -117,12 +141,19 @@ const RequestForm = ({ onClose, onSubmit }) => {
 
                     <div className="form-group">
                         <label>{formData.maintenance_for === 'equipment' ? 'Equipment' : 'Work Center'}</label>
-                        <select name="resource_id" value={formData.resource_id} onChange={handleChange} required>
+                        <select name="resource_id" value={formData.resource_id} onChange={handleResourceChange} required>
                             <option value="">Select...</option>
                             {resourceOptions.map(item => (
-                                <option key={item.id} value={item.id}>{item.name}</option>
+                                <option key={item.id} value={item.id}>
+                                    {item.name} {item.is_scrapped ? '(SCRAPPED)' : ''}
+                                </option>
                             ))}
                         </select>
+                        {formData.maintenance_for === 'equipment' && formData.resource_id && (
+                            <small className="auto-fill-note">
+                                ✓ Technician auto-filled from equipment record
+                            </small>
+                        )}
                     </div>
 
                     <div className="form-group">

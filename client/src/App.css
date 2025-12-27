@@ -345,4 +345,779 @@
   margin: 0;
 }
 
+/* Overdue and Visual Indicators */
+.kanban-card.overdue {
+  border-left: 4px solid #dc3545;
+}
 
+.overdue-strip {
+  background-color: #dc3545;
+  color: white;
+  padding: 2px 8px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  border-radius: 3px;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.overdue-text {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.card-header h4 {
+  margin: 0;
+  flex: 1;
+}
+
+.technician-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+/* Priority Colors */
+.priority-low { color: #28a745; }
+.priority-medium { color: #ffc107; }
+.priority-high { color: #fd7e14; }
+.priority-critical { color: #dc3545; font-weight: bold; }
+
+/* Type Colors */
+.type-corrective { color: #dc3545; }
+.type-preventive { color: #17a2b8; }
+
+/* Equipment Smart Button */
+.btn-smart {
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.btn-smart:hover {
+  background-color: #138496;
+}
+
+/* Scrapped Equipment */
+.scrapped-row {
+  background-color: #f8d7da !important;
+  opacity: 0.8;
+}
+
+.badge-scrap {
+  background-color: #dc3545;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  margin-left: 5px;
+}
+
+/* Warranty Indicators */
+.warranty-expired {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.warranty-valid {
+  color: #28a745;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-large {
+  max-width: 900px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.modal-header h2 {
+  margin: 0;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.equipment-details {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.detail-row {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.detail-row span {
+  font-size: 0.9rem;
+}
+
+.scrap-warning {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+.auto-fill-note {
+  color: #28a745;
+  font-size: 0.8rem;
+  display: block;
+  margin-top: 4px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  justify-content: flex-end;
+}
+
+.form-actions .btn-primary,
+.form-actions .btn-secondary {
+  width: auto;
+}
+
+.form-group textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+/* Calendar Page Styles */
+.calendar-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.calendar-nav button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.calendar-nav button:hover {
+  background: #0056b3;
+}
+
+.calendar-nav h2 {
+  margin: 0;
+  min-width: 200px;
+  text-align: center;
+}
+
+.calendar-filters {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.calendar-filters select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: #ddd;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.calendar-day-header {
+  background: #f8f9fa;
+  padding: 0.75rem;
+  text-align: center;
+  font-weight: 600;
+  color: #333;
+}
+
+.calendar-day {
+  background: white;
+  min-height: 120px;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.calendar-day:hover {
+  background-color: #f0f0f0;
+}
+
+.calendar-day.other-month {
+  background: #f9f9f9;
+  color: #999;
+}
+
+.calendar-day.today {
+  background: #e3f2fd;
+}
+
+.calendar-day.selected {
+  background: #bbdefb;
+  border: 2px solid #2196f3;
+}
+
+.calendar-day.has-events {
+  background-color: #fff3e0;
+}
+
+.day-number {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.calendar-events {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.calendar-event {
+  font-size: 0.7rem;
+  padding: 2px 4px;
+  border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.calendar-event.corrective {
+  background: #ffcdd2;
+  color: #c62828;
+}
+
+.calendar-event.preventive {
+  background: #b3e5fc;
+  color: #01579b;
+}
+
+.calendar-event.overdue {
+  background: #dc3545;
+  color: white;
+}
+
+.more-events {
+  font-size: 0.7rem;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* Day Detail Panel */
+.day-detail-panel {
+  margin-top: 2rem;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.day-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.day-detail-header h3 {
+  margin: 0;
+}
+
+.day-events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.day-event-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 4px solid #007bff;
+}
+
+.day-event-item.corrective {
+  border-left-color: #dc3545;
+}
+
+.day-event-item.preventive {
+  border-left-color: #17a2b8;
+}
+
+.day-event-info h4 {
+  margin: 0 0 0.25rem 0;
+}
+
+.day-event-info p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* Teams Page Styles */
+.teams-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.teams-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.teams-header h1 {
+  margin: 0;
+}
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.team-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.team-card-header {
+  background: #007bff;
+  color: white;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.team-card-header h3 {
+  margin: 0;
+}
+
+.team-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.team-actions button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.team-actions button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.team-card-body {
+  padding: 1rem;
+}
+
+.team-description {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.team-members-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.team-members-header h4 {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.members-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.member-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.member-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.member-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #007bff;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.member-name {
+  font-size: 0.9rem;
+}
+
+.member-role {
+  font-size: 0.75rem;
+  color: #666;
+  margin-left: 0.5rem;
+}
+
+.btn-remove-member {
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.btn-remove-member:hover {
+  color: #a71d2a;
+}
+
+.add-member-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.add-member-form select {
+  flex: 1;
+  padding: 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.add-member-form button {
+  padding: 0.4rem 0.75rem;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-member-form button:hover {
+  background: #218838;
+}
+
+.no-teams-message {
+  text-align: center;
+  color: #666;
+  padding: 3rem;
+}
+
+/* Team Form Modal */
+.team-form-modal .form-group {
+  margin-bottom: 1rem;
+}
+
+.team-form-modal .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.team-form-modal .form-group input,
+.team-form-modal .form-group textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Worksheet Button and Modal Styles */
+.btn-worksheet {
+  background: #6f42c1;
+  color: white;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.btn-worksheet:hover {
+  background: #5a32a3;
+}
+
+.card-actions {
+  margin-top: 8px;
+  border-top: 1px solid #eee;
+  padding-top: 8px;
+}
+
+.worksheet-summary {
+  display: flex;
+  gap: 2rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.summary-label {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.hours-total {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #28a745;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.status-badge.new { background: #e3f2fd; color: #1565c0; }
+.status-badge.in_progress { background: #fff3e0; color: #e65100; }
+.status-badge.repaired { background: #e8f5e9; color: #2e7d32; }
+.status-badge.scrap { background: #ffebee; color: #c62828; }
+
+.worksheet-comments-section {
+  margin: 1rem 0;
+}
+
+.worksheet-comments-section h3 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.no-comments {
+  color: #888;
+  font-style: italic;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.comment-item {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.comment-user {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #6f42c1;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.user-name {
+  font-weight: 500;
+}
+
+.comment-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.hours-badge {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.comment-date {
+  color: #999;
+}
+
+.btn-delete-comment {
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.5;
+  font-size: 0.9rem;
+}
+
+.btn-delete-comment:hover {
+  opacity: 1;
+}
+
+.comment-body {
+  color: #333;
+  line-height: 1.5;
+}
+
+.add-comment-form {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.add-comment-form h4 {
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.flex-grow {
+  flex: 1;
+}
+
+.hours-input {
+  width: 80px;
+}
+
+.hours-input input {
+  text-align: center;
+}

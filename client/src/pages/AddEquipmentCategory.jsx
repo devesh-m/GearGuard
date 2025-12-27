@@ -6,8 +6,10 @@ const AddEquipmentCategory = () => {
     const [name, setName] = useState('');
     const [responsibleUserId, setResponsibleUserId] = useState('');
     const [companyId, setCompanyId] = useState('');
+    const [teamId, setTeamId] = useState('');
     const [users, setUsers] = useState([]);
     const [companies, setCompanies] = useState([]);
+    const [teams, setTeams] = useState([]);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
@@ -17,13 +19,15 @@ const AddEquipmentCategory = () => {
                 const token = localStorage.getItem('token');
                 const headers = { token: token };
                 
-                const [usersRes, companiesRes] = await Promise.all([
+                const [usersRes, companiesRes, teamsRes] = await Promise.all([
                     axios.get('http://localhost:5000/api/users', { headers }),
-                    axios.get('http://localhost:5000/api/companies', { headers })
+                    axios.get('http://localhost:5000/api/companies', { headers }),
+                    axios.get('http://localhost:5000/api/teams', { headers })
                 ]);
 
                 setUsers(usersRes.data);
                 setCompanies(companiesRes.data);
+                setTeams(teamsRes.data);
             } catch (err) {
                 console.error('Error fetching data:', err);
                 setError('Failed to load form data');
@@ -40,7 +44,8 @@ const AddEquipmentCategory = () => {
             await axios.post('http://localhost:5000/api/categories', {
                 name,
                 responsible_user_id: responsibleUserId,
-                company_id: companyId
+                company_id: companyId,
+                team_id: teamId
             }, {
                 headers: { token: token }
             });
@@ -92,6 +97,20 @@ const AddEquipmentCategory = () => {
                         {users.map(user => (
                             <option key={user.id} value={user.id}>
                                 {user.name} ({user.role})
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="form-group">
+                    <label>Team:</label>
+                    <select
+                        value={teamId}
+                        onChange={(e) => setTeamId(e.target.value)}
+                    >
+                        <option value="">Select Team (Optional)</option>
+                        {teams.map(team => (
+                            <option key={team.id} value={team.id}>
+                                {team.name}
                             </option>
                         ))}
                     </select>

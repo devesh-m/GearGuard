@@ -29,6 +29,25 @@ const Requests = () => {
     const handleStatusUpdate = async (requestId, newStatus) => {
         try {
             const token = localStorage.getItem('token');
+            
+            // If moving to scrap, also mark the equipment as scrapped
+            if (newStatus === 'scrap') {
+                const request = requests.find(r => r.id === requestId);
+                if (request && request.maintenance_for === 'equipment') {
+                    const confirmScrap = window.confirm(
+                        'Moving to SCRAP will mark this equipment as unusable. Continue?'
+                    );
+                    if (!confirmScrap) return;
+                    
+                    // Mark equipment as scrapped
+                    await axios.put(
+                        `http://localhost:5000/api/equipment/${request.resource_id}/scrap`,
+                        {},
+                        { headers: { token: token } }
+                    );
+                }
+            }
+            
             await axios.put(`http://localhost:5000/api/requests/${requestId}/status`, 
                 { status: newStatus }, 
                 { headers: { token: token } }
