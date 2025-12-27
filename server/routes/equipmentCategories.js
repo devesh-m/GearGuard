@@ -16,10 +16,10 @@ router.get('/', authorization, async (req, res) => {
 // Create a category
 router.post('/', authorization, async (req, res) => {
     try {
-        const { name, responsible_user_id } = req.body;
+        const { name, responsible_user_id, company_id } = req.body;
         const newCategory = await pool.query(
-            "INSERT INTO equipment_categories (name, responsible_user_id) VALUES ($1, $2) RETURNING *",
-            [name, responsible_user_id]
+            "INSERT INTO equipment_categories (name, responsible_user_id, company_id) VALUES ($1, $2, $3) RETURNING *",
+            [name, responsible_user_id, company_id]
         );
         res.json(newCategory.rows[0]);
     } catch (err) {

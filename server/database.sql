@@ -43,7 +43,8 @@ CREATE TABLE IF NOT EXISTS team_members (
 CREATE TABLE IF NOT EXISTS equipment_categories (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
-    responsible_user_id UUID REFERENCES users(id)
+    responsible_user_id UUID REFERENCES users(id),
+    company_id UUID REFERENCES companies(id)
 );
 
 -- Work Centers

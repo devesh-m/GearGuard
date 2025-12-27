@@ -47,6 +47,9 @@ const RequestKanban = ({ requests, onStatusUpdate }) => {
                             >
                                 <h4>{request.subject}</h4>
                                 <p><strong>Resource:</strong> {request.resource_name}</p>
+                                {request.category_name && (
+                                    <p><strong>Category:</strong> {request.category_name}</p>
+                                )}
                                 <p><strong>Type:</strong> {request.type}</p>
                                 <p><strong>Priority:</strong> {request.priority}</p>
                                 <p><strong>Created:</strong> {new Date(request.request_date).toLocaleDateString()}</p>

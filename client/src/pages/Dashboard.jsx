@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import RequestKanban from '../components/RequestKanban';
 
 const Dashboard = () => {
     const [stats, setStats] = useState({
@@ -9,6 +10,7 @@ const Dashboard = () => {
         openRequests: 0,
         overdueRequests: 0
     });
+    const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const user = JSON.parse(localStorage.getItem('user'));
     const navigate = useNavigate();
@@ -17,6 +19,18 @@ const Dashboard = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         navigate('/login');
+    };
+
+    const fetchRequests = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.get('http://localhost:5000/api/requests', {
+                headers: { token: token }
+            });
+            setRequests(res.data);
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     useEffect(() => {
@@ -35,7 +49,21 @@ const Dashboard = () => {
         };
 
         fetchStats();
+        fetchRequests();
     }, []);
+
+    const handleStatusUpdate = async (requestId, newStatus) => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.put(`http://localhost:5000/api/requests/${requestId}/status`, 
+                { status: newStatus }, 
+                { headers: { token: token } }
+            );
+            fetchRequests();
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     if (loading) return <div className="dashboard-loading">Loading Dashboard...</div>;
 
@@ -70,6 +98,11 @@ const Dashboard = () => {
                     <div className="stat-value">{stats.openRequests}</div>
                     <p>{stats.overdueRequests} Overdue</p>
                 </div>
+            </div>
+
+            <div className="dashboard-section">
+                <h2>Active Requests</h2>
+                <RequestKanban requests={requests} onStatusUpdate={handleStatusUpdate} />
             </div>
         </div>
     );

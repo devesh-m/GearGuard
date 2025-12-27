@@ -20,6 +20,8 @@ const RequestForm = ({ onClose, onSubmit }) => {
     const [workCenters, setWorkCenters] = useState([]);
     const [teams, setTeams] = useState([]);
     const [technicians, setTechnicians] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState('');
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -29,16 +31,18 @@ const RequestForm = ({ onClose, onSubmit }) => {
     const fetchData = async () => {
         try {
             const token = localStorage.getItem('token');
-            const [eqRes, wcRes, teamRes, techRes] = await Promise.all([
+            const [eqRes, wcRes, teamRes, techRes, catRes] = await Promise.all([
                 axios.get('http://localhost:5000/api/equipment', { headers: { token } }),
                 axios.get('http://localhost:5000/api/work-centers', { headers: { token } }),
                 axios.get('http://localhost:5000/api/teams', { headers: { token } }),
-                axios.get('http://localhost:5000/api/users?role=technician', { headers: { token } })
+                axios.get('http://localhost:5000/api/users?role=technician', { headers: { token } }),
+                axios.get('http://localhost:5000/api/categories', { headers: { token } })
             ]);
             setEquipment(eqRes.data);
             setWorkCenters(wcRes.data);
             setTeams(teamRes.data);
             setTechnicians(techRes.data);
+            setCategories(catRes.data);
         } catch (err) {
             console.error(err);
         }
@@ -66,7 +70,11 @@ const RequestForm = ({ onClose, onSubmit }) => {
         }
     };
 
-    const resourceOptions = formData.maintenance_for === 'equipment' ? equipment : workCenters;
+    const filteredEquipment = selectedCategory 
+        ? equipment.filter(eq => eq.category_id === selectedCategory)
+        : equipment;
+
+    const resourceOptions = formData.maintenance_for === 'equipment' ? filteredEquipment : workCenters;
 
     return (
         <div className="modal-overlay">
@@ -91,6 +99,21 @@ const RequestForm = ({ onClose, onSubmit }) => {
                             <option value="work_center">Work Center</option>
                         </select>
                     </div>
+
+                    {formData.maintenance_for === 'equipment' && (
+                        <div className="form-group">
+                            <label>Filter by Category</label>
+                            <select 
+                                value={selectedCategory} 
+                                onChange={(e) => setSelectedCategory(e.target.value)}
+                            >
+                                <option value="">All Categories</option>
+                                {categories.map(cat => (
+                                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
 
                     <div className="form-group">
                         <label>{formData.maintenance_for === 'equipment' ? 'Equipment' : 'Work Center'}</label>

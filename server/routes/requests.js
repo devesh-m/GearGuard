@@ -17,6 +17,10 @@ router.get('/', authorization, async (req, res) => {
                        WHEN mr.maintenance_for = 'work_center' THEN wc.name
                    END as resource_name,
                    CASE 
+                       WHEN mr.maintenance_for = 'equipment' THEN ec.name
+                       ELSE NULL
+                   END as category_name,
+                   CASE 
                        WHEN mr.maintenance_for = 'work_center' THEN alt_wc.name
                        ELSE NULL
                    END as alternative_work_center_name
@@ -25,6 +29,7 @@ router.get('/', authorization, async (req, res) => {
             LEFT JOIN teams t ON mr.team_id = t.id
             LEFT JOIN users tech ON mr.technician_id = tech.id
             LEFT JOIN equipment eq ON mr.maintenance_for = 'equipment' AND mr.resource_id = eq.id
+            LEFT JOIN equipment_categories ec ON eq.category_id = ec.id
             LEFT JOIN work_centers wc ON mr.maintenance_for = 'work_center' AND mr.resource_id = wc.id
             LEFT JOIN work_centers alt_wc ON wc.alternative_work_center_id = alt_wc.id
         `;
