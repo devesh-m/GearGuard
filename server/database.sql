@@ -25,6 +25,13 @@ CREATE TABLE IF NOT EXISTS teams (
     company_id UUID
 );
 
+-- Team Members (Junction Table)
+CREATE TABLE IF NOT EXISTS team_members (
+    team_id UUID REFERENCES teams(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    PRIMARY KEY (team_id, user_id)
+);
+
 -- Equipment Categories
 CREATE TABLE IF NOT EXISTS equipment_categories (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -77,6 +84,7 @@ CREATE TABLE IF NOT EXISTS maintenance_requests (
     duration FLOAT,
     priority request_priority DEFAULT 'medium',
     status request_status DEFAULT 'new',
+    alternative_work_center_id UUID REFERENCES work_centers(id),
     instructions TEXT,
     notes TEXT
 );
