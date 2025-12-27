@@ -12,6 +12,12 @@ app.use(express.json());
 // Routes
 app.use('/auth', require('./routes/auth'));
 app.use('/dashboard', require('./routes/dashboard'));
+app.use('/api/categories', require('./routes/equipmentCategories'));
+app.use('/api/work-centers', require('./routes/workCenters'));
+app.use('/api/equipment', require('./routes/equipment'));
+app.use('/api/users', require('./routes/users'));
+app.use('/api/teams', require('./routes/teams'));
+app.use('/api/companies', require('./routes/companies'));
 
 // Test Route
 app.get('/', (req, res) => {

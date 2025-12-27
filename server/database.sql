@@ -18,11 +18,18 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Companies
+CREATE TABLE IF NOT EXISTS companies (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(255) NOT NULL,
+    address VARCHAR(255)
+);
+
 -- Teams
 CREATE TABLE IF NOT EXISTS teams (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
-    company_id UUID
+    company_id UUID REFERENCES companies(id)
 );
 
 -- Team Members (Junction Table)
@@ -47,7 +54,9 @@ CREATE TABLE IF NOT EXISTS work_centers (
     tag VARCHAR(50),
     cost_per_hour DECIMAL(10, 2),
     capacity INTEGER,
-    oee_target DECIMAL(5, 2)
+    oee_target DECIMAL(5, 2),
+    alternative_work_center_id UUID REFERENCES work_centers(id),
+    time_efficiency DECIMAL(5, 2)
 );
 
 -- Equipment
@@ -61,6 +70,7 @@ CREATE TABLE IF NOT EXISTS equipment (
     department VARCHAR(255),
     work_center_id UUID REFERENCES work_centers(id),
     location VARCHAR(255),
+    company_id UUID REFERENCES companies(id),
     health_status INTEGER DEFAULT 100 CHECK (health_status >= 0 AND health_status <= 100)
 );
 
@@ -84,7 +94,6 @@ CREATE TABLE IF NOT EXISTS maintenance_requests (
     duration FLOAT,
     priority request_priority DEFAULT 'medium',
     status request_status DEFAULT 'new',
-    alternative_work_center_id UUID REFERENCES work_centers(id),
     instructions TEXT,
     notes TEXT
 );
