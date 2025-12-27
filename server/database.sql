@@ -5,7 +5,14 @@ CREATE DATABASE gearguard;
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Users
+-- Companies (no dependencies - create first)
+CREATE TABLE IF NOT EXISTS companies (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(255) NOT NULL,
+    address VARCHAR(255)
+);
+
+-- Users (depends on companies)
 CREATE TYPE user_role AS ENUM ('admin', 'technician', 'portal_user');
 
 CREATE TABLE IF NOT EXISTS users (
@@ -14,40 +21,34 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     role user_role NOT NULL DEFAULT 'portal_user',
-    company_id UUID, -- Placeholder for now, will link to companies table later
+    company_id UUID REFERENCES companies(id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Companies
-CREATE TABLE IF NOT EXISTS companies (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name VARCHAR(255) NOT NULL,
-    address VARCHAR(255)
-);
-
--- Teams
+-- Teams (depends on companies)
 CREATE TABLE IF NOT EXISTS teams (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
     company_id UUID REFERENCES companies(id)
 );
 
--- Team Members (Junction Table)
+-- Team Members (depends on teams and users)
 CREATE TABLE IF NOT EXISTS team_members (
     team_id UUID REFERENCES teams(id) ON DELETE CASCADE,
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     PRIMARY KEY (team_id, user_id)
 );
 
--- Equipment Categories
+-- Equipment Categories (depends on users, companies, teams)
 CREATE TABLE IF NOT EXISTS equipment_categories (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
     responsible_user_id UUID REFERENCES users(id),
-    company_id UUID REFERENCES companies(id)
+    company_id UUID REFERENCES companies(id),
+    team_id UUID REFERENCES teams(id)
 );
 
--- Work Centers
+-- Work Centers (self-reference only)
 CREATE TABLE IF NOT EXISTS work_centers (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
@@ -60,7 +61,7 @@ CREATE TABLE IF NOT EXISTS work_centers (
     time_efficiency DECIMAL(5, 2)
 );
 
--- Equipment
+-- Equipment (depends on equipment_categories, users, work_centers, companies)
 CREATE TABLE IF NOT EXISTS equipment (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
@@ -72,10 +73,13 @@ CREATE TABLE IF NOT EXISTS equipment (
     work_center_id UUID REFERENCES work_centers(id),
     location VARCHAR(255),
     company_id UUID REFERENCES companies(id),
-    health_status INTEGER DEFAULT 100 CHECK (health_status >= 0 AND health_status <= 100)
+    health_status INTEGER DEFAULT 100 CHECK (health_status >= 0 AND health_status <= 100),
+    purchase_date DATE,
+    warranty_expiry DATE,
+    is_scrapped BOOLEAN DEFAULT FALSE
 );
 
--- Maintenance Requests
+-- Maintenance Requests (depends on users, teams)
 CREATE TYPE request_type AS ENUM ('corrective', 'preventive');
 CREATE TYPE request_priority AS ENUM ('low', 'medium', 'high', 'critical');
 CREATE TYPE request_status AS ENUM ('new', 'in_progress', 'repaired', 'scrap');
@@ -86,7 +90,7 @@ CREATE TABLE IF NOT EXISTS maintenance_requests (
     subject VARCHAR(255) NOT NULL,
     created_by_id UUID REFERENCES users(id),
     maintenance_for maintenance_for_type NOT NULL,
-    resource_id UUID NOT NULL, -- Polymorphic ID
+    resource_id UUID NOT NULL,
     request_date DATE DEFAULT CURRENT_DATE,
     type request_type,
     team_id UUID REFERENCES teams(id),
@@ -97,5 +101,15 @@ CREATE TABLE IF NOT EXISTS maintenance_requests (
     status request_status DEFAULT 'new',
     instructions TEXT,
     notes TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Worksheet Comments (for maintenance request worksheets)
+CREATE TABLE IF NOT EXISTS worksheet_comments (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    request_id UUID REFERENCES maintenance_requests(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id),
+    comment TEXT NOT NULL,
+    hours_logged FLOAT DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
